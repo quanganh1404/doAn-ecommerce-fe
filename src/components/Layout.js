@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Menu, Breadcrumb, Avatar, Button, Popover, Input } from "antd";
 import {
   UserOutlined,
@@ -7,13 +7,26 @@ import {
   PieChartOutlined,
 } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
+import axios from "axios";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const { Search } = Input;
 
-function LayoutAntd({ children }) {
+function LayoutAntd({ children, menuSelection = "Products" }) {
+  const [getCategories, setGetCategories] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await axios.get("http://localhost:8080/category");
+      setGetCategories(response.data);
+    }
+    fetchData();
+  }, []);
+
   const text = <span>Chat Box</span>;
+
   const ChatBox = (
     <div
       style={{
@@ -31,8 +44,14 @@ function LayoutAntd({ children }) {
     <div>
       <a href="/">Đăng nhập</a>
       <br />
-      <a href="/">Admin Dashboard</a>
-      <br />
+      {isAdmin ? (
+        <a href="/">
+          Admin Dashboard
+          <br />
+        </a>
+      ) : (
+        ""
+      )}
       <a href="/">Cài đặt tài khoản</a>
       <br />
       <a href="/">Giỏ hàng</a>
@@ -44,10 +63,17 @@ function LayoutAntd({ children }) {
   );
 
   const onSearch = (value) => {
-    console.log(value);
+    if (value) {
+      window.location.href = `http://localhost:3000/find-product/${value}`;
+    }
   };
 
   const onClickMenu = (value) => {
+    if (value.keyPath.includes("Products"))
+      window.location.href = "http://localhost:3000";
+    else {
+      window.location.href = `http://localhost:3000/${value.keyPath[1]}/${value.keyPath[0]}`;
+    }
     console.log(value.keyPath);
   };
 
@@ -70,22 +96,24 @@ function LayoutAntd({ children }) {
             placeholder="Tìm kiếm sản phẩm"
             onSearch={onSearch}
             enterButton
-            style={{ width: "50%", marginLeft: "10%" }}
+            style={{ width: "50%" }}
           />
 
           <Title level={3} style={{ color: "white", float: "left" }}>
-            VN Specialties
+            <a href="/"> VN Specialties</a>
           </Title>
         </Header>
         <Layout>
           <Sider>
             <Menu
-              defaultSelectedKeys={["Dashboard"]}
+              defaultSelectedKeys={[menuSelection]}
               mode="inline"
+              defaultOpenKeys={["about-us", "category", "sort"]}
               theme="dark"
               onClick={onClickMenu}
             >
-              <Menu.Item key="Dashboard">Dashboard</Menu.Item>
+              <Menu.Item key="Home">Trang chủ</Menu.Item>
+              <Menu.Item key="Products">Sản phẩm</Menu.Item>
               <SubMenu
                 key="about-us"
                 icon={<PieChartOutlined />}
@@ -99,9 +127,9 @@ function LayoutAntd({ children }) {
 
               <SubMenu key="category" icon={<MailOutlined />} title="Danh mục">
                 <Menu.ItemGroup key="category" title="Nơi sản xuất">
-                  <Menu.Item key="Northern">Miền bắc</Menu.Item>
-                  <Menu.Item key="Central">Miền trung</Menu.Item>
-                  <Menu.Item key="Southern">Miền nam</Menu.Item>
+                  {getCategories.map((data) => (
+                    <Menu.Item key={data._id}>{data.name}</Menu.Item>
+                  ))}
                 </Menu.ItemGroup>
               </SubMenu>
 

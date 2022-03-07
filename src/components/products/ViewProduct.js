@@ -1,7 +1,142 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import LayoutAntd from "../Layout";
+import { PageHeader, Tabs, Button, Statistic, Descriptions, Card } from "antd";
+import { StarOutlined } from "@ant-design/icons";
+import axios from "axios";
+import Text from "antd/lib/typography/Text";
+
+const { TabPane } = Tabs;
 
 function ViewProduct() {
-  return <div>ViewProduct</div>;
+  const [getProduct, setGetProduct] = useState();
+  const [loading, setLoading] = useState(true);
+  const [getCategory, setGetCategory] = useState("");
+
+  const { productSlug } = useParams();
+
+  useEffect(() => {
+    async function fetchData(productSlug) {
+      const response = await axios.get(
+        `http://localhost:8080/products/slug/${productSlug}`
+      );
+
+      setGetProduct(response.data);
+
+      const responseCategory = await axios.get(
+        `http://localhost:8080/category/${response.data.categoryId}`
+      );
+
+      setGetCategory(responseCategory.data.name);
+      setLoading(false);
+    }
+
+    fetchData(productSlug);
+  }, []); // Or [] if effect doesn't need props or state
+
+  if (loading) {
+    return (
+      <LayoutAntd>
+        <h1>Product is loading ...</h1>
+      </LayoutAntd>
+    );
+  }
+  const renderContent = (column = 2) => (
+    <Descriptions size="small" column={column}>
+      <Descriptions.Item label="Tên sản phẩm">
+        {getProduct.name}
+      </Descriptions.Item>
+      <Descriptions.Item label="Danh mục">
+        <a>{getCategory}</a>
+      </Descriptions.Item>
+      <Descriptions.Item label="Ngày sản xuất">
+        {getProduct.createdAt}
+      </Descriptions.Item>
+      <Descriptions.Item label="Số sao">
+        {getProduct.rating}
+        <StarOutlined style={{ color: "#FFFF00" }} />
+      </Descriptions.Item>
+      <Descriptions.Item label="Nơi sản xuất">
+        {getProduct.brand}
+      </Descriptions.Item>
+    </Descriptions>
+  );
+
+  const extraContent = (
+    <div
+      style={{
+        display: "flex",
+        width: "max-content",
+        justifyContent: "flex-end",
+      }}
+    >
+      {getProduct.countInStock > 0 ? (
+        <Statistic
+          title="Trạng thái"
+          value="Còn hàng"
+          style={{
+            marginRight: 32,
+          }}
+        />
+      ) : (
+        <Statistic
+          title="Trạng thái"
+          value="Đã hết hàng"
+          style={{
+            marginRight: 32,
+          }}
+        />
+      )}
+      <Statistic
+        title="Số lượng tồn"
+        value={getProduct.countInStock}
+        style={{
+          marginRight: 32,
+        }}
+      />
+      <Statistic title="Giá" prefix="VND" value={getProduct.price} />
+    </div>
+  );
+
+  const Content = ({ children, extra }) => (
+    <div className="content">
+      <div className="main">{children}</div>
+      <div className="extra">{extra}</div>
+    </div>
+  );
+
+  return (
+    <div>
+      <LayoutAntd>
+        <PageHeader
+          className="site-page-header-responsive"
+          onBack={() => window.history.back()}
+          title="Sản phẩm"
+          subTitle={productSlug}
+          extra={[
+            <Button key="1" type="primary">
+              Thêm vào giỏ hàng
+            </Button>,
+          ]}
+          footer={
+            <Tabs defaultActiveKey="1">
+              <TabPane tab="Ảnh" key="Image">
+                <img alt="example" src={getProduct.image} />
+              </TabPane>
+              <TabPane tab="Chi tiết" key="Detail">
+                {getProduct.description}
+                <br />
+                <br />
+                <Text strong>Cảm ơn bạn đã ủng hộ VN Specialties</Text>
+              </TabPane>
+            </Tabs>
+          }
+        >
+          <Content extra={extraContent}>{renderContent()}</Content>
+        </PageHeader>
+      </LayoutAntd>
+    </div>
+  );
 }
 
 export default ViewProduct;
