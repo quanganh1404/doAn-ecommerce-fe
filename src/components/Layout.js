@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Menu, Breadcrumb, Avatar, Button, Popover, Input } from "antd";
+import {
+  Layout,
+  Menu,
+  Breadcrumb,
+  Avatar,
+  Button,
+  Popover,
+  Input,
+  Typography,
+} from "antd";
 import {
   UserOutlined,
   MailOutlined,
   MessageOutlined,
   PieChartOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import axios from "axios";
 
+const { Text } = Typography;
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const { Search } = Input;
@@ -16,6 +27,7 @@ const { Search } = Input;
 function LayoutAntd({ children, menuSelection = "Products" }) {
   const [getCategories, setGetCategories] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -25,7 +37,8 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
     fetchData();
   }, []);
 
-  const text = <span>Chat Box</span>;
+  const ChatBoxTitle = <span>Chat Box</span>;
+  const CartTitle = <span>Giỏ hàng</span>;
 
   const ChatBox = (
     <div
@@ -40,25 +53,42 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
     </div>
   );
 
+  const Cart = (
+    <div
+      style={{
+        background: "#fff",
+        padding: 10,
+        minHeight: 400,
+      }}
+      className="site-layout-content"
+    >
+      Giỏ hàng của bạn ở đây chứ đâu
+    </div>
+  );
+
   const avatarContent = (
     <div>
-      <a href="/">Đăng nhập</a>
-      <br />
       {isAdmin ? (
-        <a href="/">
-          Admin Dashboard
+        <div>
+          <a href="/">Admin Dashboard</a>
           <br />
-        </a>
+        </div>
       ) : (
         ""
       )}
-      <a href="/">Cài đặt tài khoản</a>
-      <br />
-      <a href="/">Giỏ hàng</a>
-      <br />
-      <a href="/">Lịch sử đặt hàng</a>
-      <br />
-      <a href="/">Đăng xuất</a>
+      {isAuthenticated ? (
+        <div>
+          <a href="/">Cài đặt tài khoản</a>
+          <br />
+          <a href="/">Giỏ hàng</a>
+          <br />
+          <a href="/">Lịch sử đặt hàng</a>
+          <br />
+          <a href="/">Đăng xuất</a>
+        </div>
+      ) : (
+        <a href="http://localhost:3000/login">Đăng nhập</a>
+      )}
     </div>
   );
 
@@ -71,7 +101,7 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
   const onClickMenu = (value) => {
     if (value.keyPath.includes("Products"))
       window.location.href = "http://localhost:3000";
-    else {
+    if (value.keyPath.includes("category")) {
       window.location.href = `http://localhost:3000/${value.keyPath[1]}/${value.keyPath[0]}`;
     }
     console.log(value.keyPath);
@@ -161,13 +191,13 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
                 style={{
                   width: 10,
                   position: "fixed",
-                  right: "10%",
+                  right: "5%",
                   top: "90%",
                 }}
               >
                 <Popover
                   placement="rightBottom"
-                  title={text}
+                  title={ChatBoxTitle}
                   content={ChatBox}
                   trigger="click"
                 >
@@ -178,9 +208,40 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
                   />
                 </Popover>
               </div>
+              {isAuthenticated ? (
+                <div
+                  style={{
+                    width: 10,
+                    position: "fixed",
+                    right: "10%",
+                    top: "90%",
+                  }}
+                >
+                  <Popover
+                    placement="rightBottom"
+                    title={CartTitle}
+                    trigger="click"
+                    content={Cart}
+                  >
+                    <Button
+                      shape="circle"
+                      icon={<ShoppingCartOutlined />}
+                      size="large"
+                    />
+                  </Popover>
+                </div>
+              ) : (
+                ""
+              )}
             </Content>
-            <Footer style={{ textAlign: "center" }}>
-              Alright serve ©2022 Created by AdamNguyen.qa
+            <Footer
+              style={{
+                textAlign: "center",
+              }}
+            >
+              <Text strong>
+                Alright serve ©2022 Created by AdamNguyen.qa@gmail.com
+              </Text>
             </Footer>
           </Layout>
         </Layout>
