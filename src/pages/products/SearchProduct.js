@@ -1,44 +1,39 @@
-import React, { useContext } from "react";
-import "./../../App.css";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Divider,
-  Pagination,
-  Row,
-  Typography,
-} from "antd";
-import LayoutAntd from "./../Layout";
-import { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import Meta from "antd/lib/card/Meta";
-import { StarOutlined } from "@ant-design/icons";
+import LayoutAntd from "../../components/Layout";
 import Text from "antd/lib/typography/Text";
+import { Breadcrumb, Card, Col, Pagination, Row, Typography } from "antd";
+import { StarOutlined } from "@ant-design/icons";
+import Meta from "antd/lib/card/Meta";
 import { Store } from "../../utils/Store";
-import ProductCard from "./ProductCard";
+import ProductCard from "../../components/ProductCard";
 
 const { Link } = Typography;
 
-function AllProducts() {
+function SearchProduct() {
+  const [getProduct, setGetProduct] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [getProducts, setGetProducts] = useState([]);
   const [numberOfProducts, setNumberOfProducts] = useState(0);
   const [indexPage, setIndexPage] = useState(1);
 
+  const { search } = useParams();
+
   const { state, dispatch } = useContext(Store);
-  const { cartItems, userInfo } = state;
+  const { cartItems } = state;
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get("http://localhost:8080/products");
+    const fetchData = async (search) => {
+      const response = await axios.get(
+        `http://localhost:8080/products/search/${search}`
+      );
 
-      setGetProducts(response.data);
+      setGetProduct(response.data);
       setNumberOfProducts(response.data.length);
       setLoading(false);
-    }
-    fetchData();
-  }, []); // Or [] if effect doesn't need props or state
+    };
+    fetchData(search);
+  }, []);
 
   if (loading) {
     return (
@@ -48,22 +43,44 @@ function AllProducts() {
     );
   }
 
-  const defaultPageSize = 6;
+  const defaultPageSize = 1;
 
   const pageChangeHandler = (value) => {
     setIndexPage(value);
   };
 
+  const OnClickAddToCardHandler = (data) => {
+    const existItem = cartItems.find((x) => x._id === data._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+
+    if (data.countInStock < quantity) {
+      window.alert("Sorry. Product is out of stock");
+      return;
+    }
+
+    dispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...data, quantity: quantity },
+    });
+  };
+
   return (
-    <>
+    <div>
       <LayoutAntd>
         <Breadcrumb style={{ float: "left", margin: "16px 0" }}>
           <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
           <Breadcrumb.Item>Sản phẩm</Breadcrumb.Item>
+          <Breadcrumb.Item>Tìm kiếm</Breadcrumb.Item>
         </Breadcrumb>
-        <Divider orientation="left">Sản phẩm</Divider>
+        <br />
+        <br />
+        <br />
+        <Text strong style={{ fontSize: "20px" }}>
+          Tìm kiếm sản phẩm "{search}"{" "}
+        </Text>
+
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={{ padding: 10 }}>
-          {getProducts.map((data, i) => (
+          {getProduct.map((data, i) => (
             <>
               {i >= (indexPage - 1) * defaultPageSize &&
               i <= (indexPage - 1) * defaultPageSize + defaultPageSize - 1 ? (
@@ -90,14 +107,12 @@ function AllProducts() {
                     <Meta
                       key={`${data.slug}-meta`}
                       title={data.name}
-                      description={`Giá: ${data.price} VND`}
+                      description={data.category}
                     />
-                    <Text type="danger">
-                      Số lượng còn lại: {data.countInStock}
-                    </Text>
+                    Price: {data.price}VND
                     <br />
-                    {`Xếp hạng:
-                    ${data.rating} `}
+                    Rate:
+                    {data.rating}
                     <StarOutlined style={{ color: "#FFFF00" }} />
                     <br />
                     <Link
@@ -110,7 +125,9 @@ function AllProducts() {
                     </Link>
                     <br />
                     <Link
-                      style={{ float: "right" }}
+                      style={{
+                        marginLeft: "70%",
+                      }}
                       key={`${data.slug}-link`}
                       href={`/view-product/${data.slug}`}
                     >
@@ -132,8 +149,8 @@ function AllProducts() {
           onChange={pageChangeHandler}
         />
       </LayoutAntd>
-    </>
+    </div>
   );
 }
 
-export default AllProducts;
+export default SearchProduct;

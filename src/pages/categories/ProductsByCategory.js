@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import React, { useContext, useState } from "react";
-import LayoutAntd from "../Layout";
+import LayoutAntd from "../../components/Layout";
 import axios from "axios";
 import {
   Breadcrumb,

@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import { StarOutlined } from "@ant-design/icons";
 import { Card, Rate, Typography } from "antd";
 import Meta from "antd/lib/card/Meta";
 import Text from "antd/lib/typography/Text";
-import { Store } from "../../utils/Store";
+import { Store } from "../utils/Store";
 
 const { Link } = Typography;
 

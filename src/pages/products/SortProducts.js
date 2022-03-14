@@ -2,8 +2,8 @@ import { Col, Divider, Pagination, Row } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import LayoutAntd from "../Layout";
-import ProductCard from "./ProductCard";
+import LayoutAntd from "../../components/Layout";
+import ProductCard from "../../components/ProductCard";
 
 function SortProducts() {
   const { orderBy, type } = useParams();

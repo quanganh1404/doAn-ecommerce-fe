@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Table, Typography } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { Store } from "../../utils/Store";
-import LayoutAntd from "../Layout";
+import LayoutAntd from "../../components/Layout";
 
 const { Text } = Typography;
 

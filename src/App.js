@@ -1,15 +1,15 @@
 import "./App.css";
-import AllProducts from "./components/products/AllProducts";
-import ViewProduct from "./components/products/ViewProduct";
-import SearchProduct from "./components/products/SearchProduct";
-import ProductByCategory from "./components/categories/ProductsByCategory";
+import AllProducts from "./pages/products/AllProducts";
+import ViewProduct from "./pages/products/ViewProduct";
+import SearchProduct from "./pages/products/SearchProduct";
+import ProductByCategory from "./pages/categories/ProductsByCategory";
 import { Route, Routes } from "react-router-dom";
 import { Fragment } from "react";
-import Login from "./components/auth/Login";
-import Logout from "./components/auth/Logout";
-import CartView from "./components/cart/CartView";
-import SortProducts from "./components/products/SortProducts";
-import AccountSettings from "./components/account/AccountSettings";
+import Login from "./pages/auth/Login";
+import Logout from "./pages/auth/Logout";
+import CartView from "./pages/cart/CartView";
+import SortProducts from "./pages/products/SortProducts";
+import AccountSettings from "./pages/account/AccountSettings";
 
 function App() {
   return (

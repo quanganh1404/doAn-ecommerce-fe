@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import LayoutAntd from "../Layout";
+import LayoutAntd from "../../components/Layout";
 import { PageHeader, Tabs, Button, Statistic, Descriptions, Rate } from "antd";
 import axios from "axios";
 import Text from "antd/lib/typography/Text";
