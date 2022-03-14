@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Layout,
   Menu,
@@ -14,10 +14,10 @@ import {
   MailOutlined,
   MessageOutlined,
   PieChartOutlined,
-  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import axios from "axios";
+import { Store } from "../utils/Store";
 
 const { Text } = Typography;
 const { Header, Content, Footer, Sider } = Layout;
@@ -29,16 +29,28 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+
   useEffect(() => {
     async function fetchData() {
       const response = await axios.get("http://localhost:8080/category");
       setGetCategories(response.data);
     }
     fetchData();
+    if (userInfo) {
+      setIsAuthenticated(true);
+      if (userInfo.role === "ADMIN") {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } else {
+      setIsAuthenticated(false);
+    }
   }, []);
 
   const ChatBoxTitle = <span>Chat Box</span>;
-  const CartTitle = <span>Giỏ hàng</span>;
 
   const ChatBox = (
     <div
@@ -50,19 +62,6 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
       className="site-layout-content"
     >
       Chào bạn bạn cần hỗ trợ về điều gì?
-    </div>
-  );
-
-  const Cart = (
-    <div
-      style={{
-        background: "#fff",
-        padding: 10,
-        minHeight: 400,
-      }}
-      className="site-layout-content"
-    >
-      Giỏ hàng của bạn ở đây chứ đâu
     </div>
   );
 
@@ -78,13 +77,11 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
       )}
       {isAuthenticated ? (
         <div>
-          <a href="/">Cài đặt tài khoản</a>
-          <br />
-          <a href="/">Giỏ hàng</a>
+          <a href="http://localhost:3000/account/setting">Cài đặt tài khoản</a>
           <br />
           <a href="/">Lịch sử đặt hàng</a>
           <br />
-          <a href="/">Đăng xuất</a>
+          <a href="http://localhost:3000/logout">Đăng xuất</a>
         </div>
       ) : (
         <a href="http://localhost:3000/login">Đăng nhập</a>
@@ -104,6 +101,12 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
     if (value.keyPath.includes("category")) {
       window.location.href = `http://localhost:3000/${value.keyPath[1]}/${value.keyPath[0]}`;
     }
+    if (value.keyPath.includes("Cart")) {
+      window.location.href = `http://localhost:3000/cart`;
+    }
+    if (value.keyPath.includes("sort")) {
+      window.location.href = `http://localhost:3000/${value.keyPath[1]}/${value.keyPath[0]}/-1`;
+    }
     console.log(value.keyPath);
   };
 
@@ -122,6 +125,7 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
               src="./user.png"
             />
           </Popover>
+
           <Search
             placeholder="Tìm kiếm sản phẩm"
             onSearch={onSearch}
@@ -144,6 +148,7 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
             >
               <Menu.Item key="Home">Trang chủ</Menu.Item>
               <Menu.Item key="Products">Sản phẩm</Menu.Item>
+              <Menu.Item key="Cart">Giỏ hàng</Menu.Item>
               <SubMenu
                 key="about-us"
                 icon={<PieChartOutlined />}
@@ -165,9 +170,9 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
 
               <SubMenu key="sort" icon={<MailOutlined />} title="Sắp xếp theo">
                 <Menu.ItemGroup key="price" title="Sắp xếp">
-                  <Menu.Item key="price-sort">Giá cả</Menu.Item>
-                  <Menu.Item key="star-sort">Sao</Menu.Item>
-                  <Menu.Item key="quantity-sort">Đang bán</Menu.Item>
+                  <Menu.Item key="price">Giá cả</Menu.Item>
+                  <Menu.Item key="rating">Sao</Menu.Item>
+                  <Menu.Item key="countInStock">Số lượng hàng</Menu.Item>
                 </Menu.ItemGroup>
               </SubMenu>
             </Menu>
@@ -208,31 +213,6 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
                   />
                 </Popover>
               </div>
-              {isAuthenticated ? (
-                <div
-                  style={{
-                    width: 10,
-                    position: "fixed",
-                    right: "10%",
-                    top: "90%",
-                  }}
-                >
-                  <Popover
-                    placement="rightBottom"
-                    title={CartTitle}
-                    trigger="click"
-                    content={Cart}
-                  >
-                    <Button
-                      shape="circle"
-                      icon={<ShoppingCartOutlined />}
-                      size="large"
-                    />
-                  </Popover>
-                </div>
-              ) : (
-                ""
-              )}
             </Content>
             <Footer
               style={{

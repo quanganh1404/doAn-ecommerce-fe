@@ -1,20 +1,36 @@
-import { Col, Row } from "antd";
-import React from "react";
+import { Col, message, Row } from "antd";
+import React, { useContext, useEffect } from "react";
 import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button } from "antd";
+import { Store } from "../../utils/Store";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 function LoginForm() {
-  const onFinish = (values) => {
-    console.log("Success:", values);
-  };
+  const { state, dispatch } = useContext(Store);
+  const { userInfo } = state;
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  useEffect(() => {
+    if (userInfo) {
+      window.location.href = "http://localhost:3000";
+    }
+  }, []);
 
-  const onSubmit = (values) => {
-    console.log(values);
-    window.history.back();
+  const onSubmit = async (values) => {
+    try {
+      const { data } = await axios.post("http://localhost:8080/auth", {
+        email: values.email,
+        password: values.password,
+      });
+
+      dispatch({ type: "USER_LOGIN", payload: data });
+
+      Cookies.set("userInfo", JSON.stringify(data));
+
+      window.history.back();
+    } catch (err) {
+      alert(err.response.data.message);
+    }
   };
 
   return (
@@ -51,8 +67,8 @@ function LoginForm() {
                   message: "Mật khẩu không được để trống",
                 },
                 {
-                  min: 8,
-                  message: "Mật khẩu tối thiểu 8 ký tự",
+                  min: 6,
+                  message: "Mật khẩu tối thiểu 6 ký tự",
                 },
                 {
                   max: 32,

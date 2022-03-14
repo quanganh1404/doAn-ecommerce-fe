@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LayoutAntd from "../Layout";
-import { PageHeader, Tabs, Button, Statistic, Descriptions, Card } from "antd";
+import {
+  PageHeader,
+  Tabs,
+  Button,
+  Statistic,
+  Descriptions,
+  Card,
+  Rate,
+} from "antd";
 import { StarOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Text from "antd/lib/typography/Text";
+import { Store } from "../../utils/Store";
 
 const { TabPane } = Tabs;
 
@@ -14,6 +23,9 @@ function ViewProduct() {
   const [getCategory, setGetCategory] = useState("");
 
   const { productSlug } = useParams();
+
+  const { state, dispatch } = useContext(Store);
+  const { cartItems } = state;
 
   useEffect(() => {
     async function fetchData(productSlug) {
@@ -41,6 +53,7 @@ function ViewProduct() {
       </LayoutAntd>
     );
   }
+
   const renderContent = (column = 2) => (
     <Descriptions size="small" column={column}>
       <Descriptions.Item label="Tên sản phẩm">
@@ -52,9 +65,12 @@ function ViewProduct() {
       <Descriptions.Item label="Ngày sản xuất">
         {getProduct.createdAt}
       </Descriptions.Item>
-      <Descriptions.Item label="Số sao">
-        {getProduct.rating}
-        <StarOutlined style={{ color: "#FFFF00" }} />
+      <Descriptions.Item label="Đánh giá">
+        <Rate
+          style={{ marginTop: -10 }}
+          disabled
+          defaultValue={getProduct.rating}
+        />
       </Descriptions.Item>
       <Descriptions.Item label="Nơi sản xuất">
         {getProduct.brand}
@@ -105,6 +121,21 @@ function ViewProduct() {
     </div>
   );
 
+  const AddToCard = () => {
+    const existItem = cartItems.find((x) => x._id === getProduct._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+
+    if (getProduct.countInStock < quantity) {
+      window.alert("Sorry. Product is out of stock");
+      return;
+    }
+
+    dispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...getProduct, quantity: quantity },
+    });
+  };
+
   return (
     <div>
       <LayoutAntd>
@@ -114,7 +145,7 @@ function ViewProduct() {
           title="Sản phẩm"
           subTitle={productSlug}
           extra={[
-            <Button key="1" type="primary">
+            <Button onClick={AddToCard} key="1" type="primary">
               Thêm vào giỏ hàng
             </Button>,
           ]}

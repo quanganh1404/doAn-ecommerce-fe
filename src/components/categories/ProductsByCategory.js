@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import LayoutAntd from "../Layout";
 import axios from "axios";
 import {
@@ -14,6 +14,7 @@ import {
 import Meta from "antd/lib/card/Meta";
 import Text from "antd/lib/typography/Text";
 import { StarOutlined } from "@ant-design/icons";
+import { Store } from "../../utils/Store";
 
 const { Link } = Typography;
 
@@ -26,6 +27,9 @@ function ProductsByCategory() {
   const [indexPage, setIndexPage] = useState(1);
   const [categoryName, setCategoryName] = useState("");
 
+  const { state, dispatch } = useContext(Store);
+  const { cartItems } = state;
+
   useState(() => {
     async function fetchData() {
       const response = await axios.get(
@@ -33,6 +37,7 @@ function ProductsByCategory() {
       );
       setGetProductByCategory(response.data.data);
       setCategoryName(response.data.categoryName);
+      setNumberOfProducts(response.data.length);
       setLoading(false);
     }
     fetchData();
@@ -50,6 +55,21 @@ function ProductsByCategory() {
 
   const pageChangeHandler = (value) => {
     setIndexPage(value);
+  };
+
+  const OnClickAddToCardHandler = (data) => {
+    const existItem = cartItems.find((x) => x._id === data._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+
+    if (data.countInStock < quantity) {
+      window.alert("Sorry. Product is out of stock");
+      return;
+    }
+
+    dispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...data, quantity: quantity },
+    });
   };
 
   return (
@@ -96,6 +116,15 @@ function ProductsByCategory() {
                   {`Xếp hạng:
             ${data.rating} `}
                   <StarOutlined style={{ color: "#FFFF00" }} />
+                  <br />
+                  <Link
+                    style={{
+                      float: "right",
+                    }}
+                    onClick={() => OnClickAddToCardHandler(data)}
+                  >
+                    Thêm vào giỏ hàng
+                  </Link>
                   <br />
                   <Link
                     style={{

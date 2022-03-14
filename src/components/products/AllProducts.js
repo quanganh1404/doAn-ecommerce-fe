@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./../../App.css";
 import {
   Breadcrumb,
@@ -15,6 +15,8 @@ import axios from "axios";
 import Meta from "antd/lib/card/Meta";
 import { StarOutlined } from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
+import { Store } from "../../utils/Store";
+import ProductCard from "./ProductCard";
 
 const { Link } = Typography;
 
@@ -23,6 +25,9 @@ function AllProducts() {
   const [getProducts, setGetProducts] = useState([]);
   const [numberOfProducts, setNumberOfProducts] = useState(0);
   const [indexPage, setIndexPage] = useState(1);
+
+  const { state, dispatch } = useContext(Store);
+  const { cartItems, userInfo } = state;
 
   useEffect(() => {
     async function fetchData() {
@@ -68,7 +73,8 @@ function AllProducts() {
                   span={8}
                   style={{ marginTop: "10px" }}
                 >
-                  <Card
+                  <ProductCard data={data}></ProductCard>
+                  {/* <Card
                     hoverable
                     href={`/view-product/${data.slug}`}
                     style={{ width: "100%" }}
@@ -96,14 +102,21 @@ function AllProducts() {
                     <br />
                     <Link
                       style={{
-                        marginLeft: "70%",
+                        float: "right",
                       }}
+                      onClick={() => OnClickAddToCardHandler(data)}
+                    >
+                      Thêm vào giỏ hàng
+                    </Link>
+                    <br />
+                    <Link
+                      style={{ float: "right" }}
                       key={`${data.slug}-link`}
                       href={`/view-product/${data.slug}`}
                     >
                       Xem chi tiết
                     </Link>
-                  </Card>
+                  </Card> */}
                 </Col>
               ) : (
                 ""

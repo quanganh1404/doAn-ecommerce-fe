@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import LayoutAntd from "../Layout";
@@ -6,6 +6,8 @@ import Text from "antd/lib/typography/Text";
 import { Breadcrumb, Card, Col, Pagination, Row, Typography } from "antd";
 import { StarOutlined } from "@ant-design/icons";
 import Meta from "antd/lib/card/Meta";
+import { Store } from "../../utils/Store";
+import ProductCard from "./ProductCard";
 
 const { Link } = Typography;
 
@@ -16,6 +18,9 @@ function SearchProduct() {
   const [indexPage, setIndexPage] = useState(1);
 
   const { search } = useParams();
+
+  const { state, dispatch } = useContext(Store);
+  const { cartItems } = state;
 
   useEffect(() => {
     const fetchData = async (search) => {
@@ -44,6 +49,21 @@ function SearchProduct() {
     setIndexPage(value);
   };
 
+  const OnClickAddToCardHandler = (data) => {
+    const existItem = cartItems.find((x) => x._id === data._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+
+    if (data.countInStock < quantity) {
+      window.alert("Sorry. Product is out of stock");
+      return;
+    }
+
+    dispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...data, quantity: quantity },
+    });
+  };
+
   return (
     <div>
       <LayoutAntd>
@@ -70,7 +90,8 @@ function SearchProduct() {
                   span={8}
                   style={{ marginTop: "10px" }}
                 >
-                  <Card
+                  <ProductCard data={data}></ProductCard>
+                  {/* <Card
                     hoverable
                     href={`/view-product/${data.slug}`}
                     style={{ width: "100%" }}
@@ -96,6 +117,15 @@ function SearchProduct() {
                     <br />
                     <Link
                       style={{
+                        float: "right",
+                      }}
+                      onClick={() => OnClickAddToCardHandler(data)}
+                    >
+                      Thêm vào giỏ hàng
+                    </Link>
+                    <br />
+                    <Link
+                      style={{
                         marginLeft: "70%",
                       }}
                       key={`${data.slug}-link`}
@@ -103,7 +133,7 @@ function SearchProduct() {
                     >
                       Xem chi tiết
                     </Link>
-                  </Card>
+                  </Card> */}
                 </Col>
               ) : (
                 ""
