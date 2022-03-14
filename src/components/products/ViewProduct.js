@@ -1,16 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LayoutAntd from "../Layout";
-import {
-  PageHeader,
-  Tabs,
-  Button,
-  Statistic,
-  Descriptions,
-  Card,
-  Rate,
-} from "antd";
-import { StarOutlined } from "@ant-design/icons";
+import { PageHeader, Tabs, Button, Statistic, Descriptions, Rate } from "antd";
 import axios from "axios";
 import Text from "antd/lib/typography/Text";
 import { Store } from "../../utils/Store";
