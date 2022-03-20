@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import "./../../App.css";
 import {
   Breadcrumb,
-  Card,
   Col,
   Divider,
   Pagination,
@@ -64,7 +63,7 @@ function AllProducts() {
         <Divider orientation="left">Sản phẩm</Divider>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={{ padding: 10 }}>
           {getProducts.map((data, i) => (
-            <>
+            <Fragment key={`${data.slug}-fragment`}>
               {i >= (indexPage - 1) * defaultPageSize &&
               i <= (indexPage - 1) * defaultPageSize + defaultPageSize - 1 ? (
                 <Col
@@ -73,55 +72,12 @@ function AllProducts() {
                   span={8}
                   style={{ marginTop: "10px" }}
                 >
-                  <ProductCard data={data}></ProductCard>
-                  {/* <Card
-                    hoverable
-                    href={`/view-product/${data.slug}`}
-                    style={{ width: "100%" }}
-                    key={`${data.slug}-card`}
-                    cover={
-                      <img
-                        alt="example"
-                        src={data.image}
-                        // src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                      />
-                    }
-                  >
-                    <Meta
-                      key={`${data.slug}-meta`}
-                      title={data.name}
-                      description={`Giá: ${data.price} VND`}
-                    />
-                    <Text type="danger">
-                      Số lượng còn lại: {data.countInStock}
-                    </Text>
-                    <br />
-                    {`Xếp hạng:
-                    ${data.rating} `}
-                    <StarOutlined style={{ color: "#FFFF00" }} />
-                    <br />
-                    <Link
-                      style={{
-                        float: "right",
-                      }}
-                      onClick={() => OnClickAddToCardHandler(data)}
-                    >
-                      Thêm vào giỏ hàng
-                    </Link>
-                    <br />
-                    <Link
-                      style={{ float: "right" }}
-                      key={`${data.slug}-link`}
-                      href={`/view-product/${data.slug}`}
-                    >
-                      Xem chi tiết
-                    </Link>
-                  </Card> */}
+                  <ProductCard data={data} />
                 </Col>
               ) : (
                 ""
               )}
-            </>
+            </Fragment>
           ))}
         </Row>
         <Pagination

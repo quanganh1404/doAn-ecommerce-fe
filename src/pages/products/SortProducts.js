@@ -1,6 +1,6 @@
-import { Col, Divider, Pagination, Row } from "antd";
+import { Breadcrumb, Col, Divider, Pagination, Row } from "antd";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 import LayoutAntd from "../../components/Layout";
 import ProductCard from "../../components/ProductCard";
@@ -39,15 +39,30 @@ function SortProducts() {
     setIndexPage(value);
   };
 
-  const defaultPageSize = 3;
+  const defaultPageSize = 6;
 
   return (
     <div>
-      <LayoutAntd>
+      <LayoutAntd menuSelection={orderBy}>
+        <Breadcrumb style={{ float: "left", margin: "16px 0" }}>
+          <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+          <Breadcrumb.Item>Sản phẩm</Breadcrumb.Item>
+          <Breadcrumb.Item>Sắp xếp</Breadcrumb.Item>
+          <Breadcrumb.Item>
+            {orderBy === "price" ? "Giá cả" : ""}
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            {orderBy === "rating" ? "Đánh giá" : ""}
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            {orderBy === "countInStock" ? "Số lượng hàng" : ""}
+          </Breadcrumb.Item>
+        </Breadcrumb>
+
         <Divider orientation="left">Sản phẩm</Divider>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={{ padding: 10 }}>
           {getProducts.map((data, i) => (
-            <>
+            <Fragment key={`${data.slug}-fragment`}>
               {i >= (indexPage - 1) * defaultPageSize &&
               i <= (indexPage - 1) * defaultPageSize + defaultPageSize - 1 ? (
                 <Col
@@ -56,12 +71,12 @@ function SortProducts() {
                   span={8}
                   style={{ marginTop: "10px" }}
                 >
-                  <ProductCard data={data}></ProductCard>
+                  <ProductCard data={data} />
                 </Col>
               ) : (
                 ""
               )}
-            </>
+            </Fragment>
           ))}
         </Row>
         <Pagination

@@ -1,4 +1,4 @@
-import { Col, message, Row } from "antd";
+import { Col, Row } from "antd";
 import React, { useContext, useEffect } from "react";
 import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 import { Form, Input, Button } from "antd";
@@ -43,7 +43,6 @@ function LoginForm() {
           <Col>Đăng nhập tài khoản</Col>
         </Row>
         <div className="form">
-          {/* {auth.error && <Alert message={auth.error} type="error" showIcon />} */}
           <Form name="basic" onFinish={onSubmit} autoComplete="off">
             Email
             <Form.Item
@@ -67,8 +66,8 @@ function LoginForm() {
                   message: "Mật khẩu không được để trống",
                 },
                 {
-                  min: 6,
-                  message: "Mật khẩu tối thiểu 6 ký tự",
+                  min: 4,
+                  message: "Mật khẩu tối thiểu 4 ký tự",
                 },
                 {
                   max: 32,
@@ -78,15 +77,8 @@ function LoginForm() {
             >
               <Input.Password type="password" addonAfter={<LockOutlined />} />
             </Form.Item>
-            {/* <div className='forgot' onClick={()=> history.push('/forgot')}><a>Quên mật khẩu</a></div> */}
             <Form.Item>
-              <Button
-                // onClick={dispatch(setLoading(true))}
-                // loading={auth.isLoading}
-                type="primary"
-                htmlType="submit"
-                className="submit"
-              >
+              <Button type="primary" htmlType="submit" className="submit">
                 Đăng nhập
               </Button>
             </Form.Item>

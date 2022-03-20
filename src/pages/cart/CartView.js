@@ -1,7 +1,8 @@
-import { Breadcrumb, Button, Table, Typography } from "antd";
+import { Breadcrumb, Button, Empty, Table, Typography } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { Store } from "../../utils/Store";
 import LayoutAntd from "../../components/Layout";
+import { Route, Routes } from "react-router-dom";
 
 const { Text } = Typography;
 
@@ -18,11 +19,14 @@ function CartView() {
       setTotal(totalPrice);
     }
     fetchData();
-  }, []);
+  }, [cartItems]);
 
   const RemoveItemHandler = (record) => {
     dispatch({ type: "CART_REMOVE_ITEM", payload: record });
     window.location.href = "/cart";
+    <Routes>
+      <Route path="/" element={<CartView home />} />
+    </Routes>;
   };
 
   const columns = [
@@ -69,6 +73,10 @@ function CartView() {
     },
   ];
 
+  const CheckOutHandler = () => {
+    window.location.href = "/checkout";
+  };
+
   return (
     <LayoutAntd menuSelection="Cart">
       <Breadcrumb style={{ margin: "16px 0", textAlign: "left" }}>
@@ -92,15 +100,21 @@ function CartView() {
                   VND
                 </Text>
                 <br />
-                <Button style={{ float: "right" }} type="primary">
-                  Thanh toán
+                <Button
+                  onClick={CheckOutHandler}
+                  style={{ float: "right" }}
+                  type="primary"
+                >
+                  Đặt hàng
                 </Button>
               </div>
             </div>
           </div>
         ) : (
           <div>
+            <br />
             Giỏ hàng của bạn đang trống.
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
             <a href="/">Chọn sản phẩm</a> ngay
           </div>
         )

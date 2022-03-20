@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Card, Rate, Typography } from "antd";
+import { Card, message, Rate, Typography } from "antd";
 import Meta from "antd/lib/card/Meta";
 import Text from "antd/lib/typography/Text";
 import { Store } from "../utils/Store";
@@ -8,25 +8,23 @@ const { Link } = Typography;
 
 function ProductCard({ data }) {
   const { state, dispatch } = useContext(Store);
-  const { cartItems, userInfo } = state;
+  const { cartItems } = state;
 
   const OnClickAddToCardHandler = (data) => {
     const existItem = cartItems.find((x) => x._id === data._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
 
     if (data.countInStock < quantity) {
-      window.alert("Xin lỗi quý khách sản phẩm đã hết hàng");
+      message.info("Xin lỗi quý khách sản phẩm này đã hết hàng");
       return;
     }
 
-    window.alert("Đã thêm sản phẩm vào giỏ hàng");
+    message.info("Đã thêm sản phẩm vào giỏ hàng");
 
     dispatch({
       type: "CART_ADD_ITEM",
       payload: { ...data, quantity: quantity },
     });
-
-    window.location.href = "http://localhost:3000/cart";
   };
 
   return (
@@ -38,6 +36,7 @@ function ProductCard({ data }) {
         key={`${data.slug}-card`}
         cover={
           <img
+            style={{ height: 300 }}
             alt="example"
             src={data.image}
             // src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
@@ -49,15 +48,18 @@ function ProductCard({ data }) {
           title={data.name}
           description={`Giá: ${data.price} VND`}
         />
-        <Text type="danger">Số lượng còn lại: {data.countInStock}</Text>
+        <Text key={`${data.slug}-quantity`} type="danger">
+          Số lượng còn lại: {data.countInStock}
+        </Text>
         <br />
 
-        <Rate defaultValue={data.rating} disabled />
+        <Rate key={`${data.slug}-rate`} defaultValue={data.rating} disabled />
         <br />
         <Link
           style={{
             float: "right",
           }}
+          key={`${data.slug}-addToCard`}
           onClick={() => OnClickAddToCardHandler(data)}
         >
           Thêm vào giỏ hàng
@@ -65,7 +67,7 @@ function ProductCard({ data }) {
         <br />
         <Link
           style={{ float: "right" }}
-          key={`${data.slug}-link`}
+          key={`${data.slug}-viewProduct`}
           href={`/view-product/${data.slug}`}
         >
           Xem chi tiết

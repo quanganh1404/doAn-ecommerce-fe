@@ -10,6 +10,7 @@ const initialState = {
   cartItems: Cookies.get("cartItems")
     ? JSON.parse(Cookies.get("cartItems"))
     : [],
+  imageLink: Cookies.get("imageLink") ? Cookies.get("imageLink") : "",
 };
 
 function reducer(state, action) {
@@ -26,10 +27,9 @@ function reducer(state, action) {
     }
 
     case "CART_ADD_ITEM": {
-      const { _id, name, countInStock, quantity, image, price } =
+      const { _id, slug, name, countInStock, quantity, image, price } =
         action.payload;
-      const newItem = { _id, name, countInStock, quantity, image, price };
-      // const newItem = action.payload;
+      const newItem = { _id, slug, name, countInStock, quantity, image, price };
       const existItem = state.cartItems.find(
         (item) => item._id === newItem._id
       );
@@ -53,6 +53,26 @@ function reducer(state, action) {
       Cookies.set("cartItems", JSON.stringify(cartItems));
 
       return { ...state, ...cartItems };
+    }
+
+    case "CHECKOUT_COMPLETE": {
+      const { cartItems, ...rest } = state;
+      Cookies.remove("cartItems");
+
+      return { rest };
+    }
+
+    case "GET_IMAGE_LINK_CLOUD": {
+      Cookies.set("imageLink", state.imageLink);
+
+      return { ...state, imageLink: action.payload };
+    }
+
+    case "CLEAR_IMAGE_LINK": {
+      Cookies.remove("imageLink");
+
+      const { imageLink, ...rest } = state;
+      return { rest };
     }
 
     default:
