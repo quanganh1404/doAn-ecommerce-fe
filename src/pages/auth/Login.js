@@ -12,16 +12,19 @@ function LoginForm() {
 
   useEffect(() => {
     if (userInfo) {
-      window.location.href = "http://localhost:3000";
+      window.location.href = `${process.env.REACT_APP_FE_HOST}`;
     }
   }, []);
 
   const onSubmit = async (values) => {
     try {
-      const { data } = await axios.post("http://localhost:8080/auth", {
-        email: values.email,
-        password: values.password,
-      });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BE_HOST}/auth`,
+        {
+          email: values.email,
+          password: values.password,
+        }
+      );
 
       dispatch({ type: "USER_LOGIN", payload: data });
 
@@ -84,7 +87,7 @@ function LoginForm() {
             </Form.Item>
             <div className="reg">
               <span>Bạn chưa có tài khoản? </span>
-              <a href="http://localhost:3000">Đăng ký</a>
+              <a href={`${process.env.REACT_APP_FE_HOST}`}>Đăng ký</a>
             </div>
           </Form>
         </div>

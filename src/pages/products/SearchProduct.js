@@ -25,7 +25,7 @@ function SearchProduct() {
   useEffect(() => {
     const fetchData = async (search) => {
       const response = await axios.get(
-        `http://localhost:8080/products/search/${search}`
+        `${process.env.REACT_APP_BE_HOST}/products/search/${search}`
       );
 
       setGetProduct(response.data);

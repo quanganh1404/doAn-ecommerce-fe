@@ -10,7 +10,7 @@ function AddCategory() {
 
   const OnAddCategoryHandler = async () => {
     try {
-      await axios.post("http://localhost:8080/category", {
+      await axios.post(`${process.env.REACT_APP_BE_HOST}/category`, {
         name: name,
         description: description,
       });

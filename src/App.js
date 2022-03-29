@@ -21,6 +21,8 @@ import UserEdit from "./pages/admin/UserEdit/UserEdit";
 import CategoryEdit from "./pages/admin/CategoryEdit/CategoryEdit";
 import AddProduct from "./pages/admin/ProductEdit/AddProduct";
 import AddCategory from "./pages/admin/CategoryEdit/AddCategory";
+import UserOrder from "./pages/order/UserOrder";
+import UserOrderDetail from "./pages/order/UserOrderDetail";
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
           <Route path="account/setting" element={<AccountSettings />} />
           <Route path="logout" element={<Logout />} />
           <Route path="admin/:option" element={<AdminDashboard />} />
+          <Route path="order" element={<UserOrder />} />
+          <Route path="order/:_id" element={<UserOrderDetail />} />
           <Route path="admin/dashboard" element={<AdminDashboardHome />} />
           <Route path="admin/product/:_id" element={<ProductEdit />} />
           <Route path="add/product/" element={<AddProduct />} />

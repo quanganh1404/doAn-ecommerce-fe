@@ -34,20 +34,22 @@ function LayoutAntd({ children, menuSelection = "users" }) {
     <div>
       {isAuthenticated ? (
         <div>
-          <a href="http://localhost:3000/account/setting">Cài đặt tài khoản</a>
+          <a href={`${process.env.REACT_APP_FE_HOST}/account/setting`}>
+            Cài đặt tài khoản
+          </a>
           <br />
           <a href="/">Lịch sử đặt hàng</a>
           <br />
-          <a href="http://localhost:3000/logout">Đăng xuất</a>
+          <a href={`${process.env.REACT_APP_FE_HOST}/logout`}>Đăng xuất</a>
         </div>
       ) : (
-        <a href="http://localhost:3000/login">Đăng nhập</a>
+        <a href={`${process.env.REACT_APP_FE_HOST}/login`}>Đăng nhập</a>
       )}
     </div>
   );
 
   const onClickMenu = (value) => {
-    window.location.href = `http://localhost:3000/admin/${value.keyPath[0]}`;
+    window.location.href = `${process.env.REACT_APP_FE_HOST}/admin/${value.keyPath[0]}`;
   };
 
   return (

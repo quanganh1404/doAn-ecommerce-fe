@@ -13,7 +13,9 @@ function CategoryEdit() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get(`http://localhost:8080/category/${_id}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/category/${_id}`
+      );
       setName(response.data.name);
       setDescription(response.data.description);
       setLoading(false);
@@ -40,10 +42,13 @@ function CategoryEdit() {
           <Button
             onClick={async () => {
               try {
-                await axios.patch(`http://localhost:8080/category/${_id}`, {
-                  name: name,
-                  description: description,
-                });
+                await axios.patch(
+                  `${process.env.REACT_APP_BE_HOST}/category/${_id}`,
+                  {
+                    name: name,
+                    description: description,
+                  }
+                );
 
                 message.success("Cập nhập thành công");
               } catch (err) {

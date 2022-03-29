@@ -19,7 +19,6 @@ function AccountSettings() {
   const { state } = useContext(Store);
   const { userInfo } = state;
 
-
   useEffect(() => {
     if (userInfo) {
       setIsAuthenticated(true);
@@ -54,25 +53,30 @@ function AccountSettings() {
       )}
       {isAuthenticated ? (
         <div>
-          <a href={`http://localhost:3000/account/setting`}>Cài đặt tài khoản</a>
+          <a href={`${process.env.REACT_APP_FE_HOST}/account/setting`}>
+            Cài đặt tài khoản
+          </a>
           <br />
           <a href="/">Lịch sử đặt hàng</a>
           <br />
-          <a href={`http://localhost:3000/logout`}>Đăng xuất</a>
+          <a href={`${process.env.REACT_APP_FE_HOST}/logout`}>Đăng xuất</a>
         </div>
       ) : (
-        <a href={`http://localhost:3000/login`}>Đăng nhập</a>
+        <a href={`${process.env.REACT_APP_FE_HOST}/login`}>Đăng nhập</a>
       )}
     </div>
   );
 
   const EditUserHandler = async (data) => {
     console.log(data);
-    await axios.patch(`http://localhost:8080/users/${userInfo._id}`, {
-      email: data?.email,
-      name: data?.name,
-      phoneNum: parseInt(data?.phoneNum),
-    });
+    await axios.patch(
+      `${process.env.REACT_APP_BE_HOST}/users/${userInfo._id}`,
+      {
+        email: data?.email,
+        name: data?.name,
+        phoneNum: parseInt(data?.phoneNum),
+      }
+    );
     message.success("Update success");
   };
 

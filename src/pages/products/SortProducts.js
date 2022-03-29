@@ -17,7 +17,7 @@ function SortProducts() {
   useState(() => {
     async function fetchData() {
       const response = await axios.get(
-        `http://localhost:8080/products/sort/${orderBy}/${type}`
+        `${process.env.REACT_APP_BE_HOST}/products/sort/${orderBy}/${type}`
       );
       setGetProducts(response.data);
 

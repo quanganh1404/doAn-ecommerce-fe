@@ -21,13 +21,13 @@ function ViewProduct() {
   useEffect(() => {
     async function fetchData(productSlug) {
       const response = await axios.get(
-        `http://localhost:8080/products/slug/${productSlug}`
+        `${process.env.REACT_APP_BE_HOST}/products/slug/${productSlug}`
       );
 
       setGetProduct(response.data);
 
       const responseCategory = await axios.get(
-        `http://localhost:8080/category/${response.data.categoryId}`
+        `${process.env.REACT_APP_BE_HOST}/category/${response.data.categoryId}`
       );
 
       setGetCategory(responseCategory.data.name);

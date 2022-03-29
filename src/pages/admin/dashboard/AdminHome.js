@@ -18,9 +18,11 @@ function AdminHome() {
 
   useEffect(() => {
     async function fetchData() {
-      const products = await axios.get("http://localhost:8080/products");
-      const orders = await axios.get("http://localhost:8080/orders");
-      const users = await axios.get("http://localhost:8080/users");
+      const products = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/products`
+      );
+      const orders = await axios.get(`${process.env.REACT_APP_BE_HOST}/orders`);
+      const users = await axios.get(`${process.env.REACT_APP_BE_HOST}/users`);
 
       const productQuantity = products.data.length;
       const userQuantity = users.data.length;

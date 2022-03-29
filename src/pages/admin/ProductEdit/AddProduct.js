@@ -34,7 +34,9 @@ function AddProduct() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get(`http://localhost:8080/category`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/category`
+      );
       setGetAllCategory(response.data);
       setNewImageLink(imageLink);
       setLoading(false);
@@ -52,7 +54,7 @@ function AddProduct() {
 
   const OnAddProductHandler = async () => {
     try {
-      await axios.post("http://localhost:8080/products", {
+      await axios.post(`${process.env.REACT_APP_BE_HOST}/products`, {
         categoryId: newCategoryId,
         image: newImageLink,
         name: newName,

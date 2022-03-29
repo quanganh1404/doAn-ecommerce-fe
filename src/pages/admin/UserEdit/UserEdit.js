@@ -15,7 +15,9 @@ function UserEdit() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get(`http://localhost:8080/users/${_id}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/users/${_id}`
+      );
       setGetUser(response.data);
       response.data.role === "ADMIN" ? setIsAdmin(true) : setIsAdmin(false);
       setLoading(false);
@@ -34,9 +36,12 @@ function UserEdit() {
   async function onChange(checked) {
     setIsAdmin(checked);
 
-    const update = await axios.patch(`http://localhost:8080/users/${_id}`, {
-      role: !isAdmin ? "ADMIN" : "CUSTOMER",
-    });
+    const update = await axios.patch(
+      `${process.env.REACT_APP_BE_HOST}/users/${_id}`,
+      {
+        role: !isAdmin ? "ADMIN" : "CUSTOMER",
+      }
+    );
 
     message.success(update.data.message);
   }

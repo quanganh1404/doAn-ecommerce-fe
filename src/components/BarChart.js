@@ -18,7 +18,7 @@ function BarChart() {
   useEffect(() => {
     async function fetchData() {
       const response = await axios.get(
-        "http://localhost:8080/orders/dashboard"
+        `${process.env.REACT_APP_BE_HOST}/orders/dashboard`
       );
       setGetData(response.data.data);
       setLoading(false);

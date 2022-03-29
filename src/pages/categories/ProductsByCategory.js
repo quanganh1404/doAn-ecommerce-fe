@@ -31,7 +31,7 @@ function ProductsByCategory() {
   useState(() => {
     async function fetchData() {
       const response = await axios.get(
-        `http://localhost:8080/products/category/${category}`
+        `${process.env.REACT_APP_BE_HOST}/products/category/${category}`
       );
       setGetProductByCategory(response.data.data);
       setCategoryName(response.data.categoryName);

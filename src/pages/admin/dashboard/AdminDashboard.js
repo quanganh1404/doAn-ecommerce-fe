@@ -20,7 +20,9 @@ function AdminDashboard() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get(`http://localhost:8080/${option}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/${option}`
+      );
       setGetData(response.data);
       setLoading(false);
     }
@@ -49,7 +51,9 @@ function AdminDashboard() {
   // (Math.random() + 1).toString(36).substring(3);
 
   const IsPaidHander = async (record) => {
-    await axios.get(`http://localhost:8080/orders/paid/${record._id}`);
+    await axios.get(
+      `${process.env.REACT_APP_BE_HOST}/orders/paid/${record._id}`
+    );
     message.success("Cập nhập thanh toán thành công");
   };
 
@@ -88,7 +92,7 @@ function AdminDashboard() {
             href={`/admin/${option}`}
             onClick={async () => {
               await axios.delete(
-                `http://localhost:8080/${option}/${record._id}`
+                `${process.env.REACT_APP_BE_HOST}/${option}/${record._id}`
               );
             }}
           >
@@ -112,7 +116,7 @@ function AdminDashboard() {
       key: "name",
       render: (text) => (
         <a
-          href={`http://localhost:3000/view-product/${text
+          href={`${process.env.REACT_APP_FE_HOST}/view-product/${text
             .toLowerCase()
             .replace(/ /g, "-")
             .replace(/[^\w-]+/g, "")}`}
@@ -135,7 +139,9 @@ function AdminDashboard() {
       key: "category",
       render: (text) => {
         return (
-          <a href={`http://localhost:3000/admin/category/${text}`}>{text}</a>
+          <a href={`${process.env.REACT_APP_FE_HOST}/admin/category/${text}`}>
+            {text}
+          </a>
         );
       },
     },
@@ -166,7 +172,9 @@ function AdminDashboard() {
           <a
             href={`/admin/${option}`}
             onClick={async () =>
-              await axios.delete(`http://localhost:8080/products/${record._id}`)
+              await axios.delete(
+                `${process.env.REACT_APP_BE_HOST}/products/${record._id}`
+              )
             }
           >
             Xóa
@@ -184,14 +192,18 @@ function AdminDashboard() {
       key: "action",
       render: (text, record) => (
         <Space size="middle">
-          <a href={`http://localhost:3000/admin/category/${record._id}`}>Sửa</a>
+          <a
+            href={`${process.env.REACT_APP_FE_HOST}/admin/category/${record._id}`}
+          >
+            Sửa
+          </a>
           <a
             href="category"
             onClick={async () => {
               try {
                 message.success("Xóa thành công");
                 await axios.delete(
-                  `http://localhost:8080/category/${record._id}`
+                  `${process.env.REACT_APP_BE_HOST}/category/${record._id}`
                 );
               } catch (err) {
                 message.error(err);
@@ -212,7 +224,9 @@ function AdminDashboard() {
       dataIndex: "userId",
       key: "userId",
       render: (text) => (
-        <a href={`http://localhost:3000/admin/user/${text}`}>{text}</a>
+        <a href={`${process.env.REACT_APP_FE_HOST}/admin/user/${text}`}>
+          {text}
+        </a>
       ),
     },
     {
@@ -263,11 +277,17 @@ function AdminDashboard() {
           <a href="/admin/orders" onClick={() => IsPaidHander(record)}>
             Thanh toán
           </a>
-          <a href={`http://localhost:3000/admin/order/${record._id}`}>Xem</a>
+          <a
+            href={`${process.env.REACT_APP_FE_HOST}/admin/order/${record._id}`}
+          >
+            Xem
+          </a>
           <a
             href="orders"
             onClick={async () => {
-              await axios.delete(`http://localhost:8080/orders/${record._id}`);
+              await axios.delete(
+                `${process.env.REACT_APP_BE_HOST}/orders/${record._id}`
+              );
             }}
           >
             Xóa
@@ -284,7 +304,7 @@ function AdminDashboard() {
           <h3>Quản lý sản phẩm</h3>
           <Button
             onClick={() => {
-              window.location.href = "http://localhost:3000/add/product";
+              window.location.href = `${process.env.REACT_APP_FE_HOST}/add/product`;
             }}
             type="primary"
             style={{ float: "right" }}

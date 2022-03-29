@@ -24,8 +24,6 @@ const { Text } = Typography;
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const { Search } = Input;
-console.log(process.env.REACT_APP_FE_HOST);
-console.log(process.env.REACT_APP_BE_HOST);
 
 function LayoutAntd({ children, menuSelection = "Products" }) {
   const [getCategories, setGetCategories] = useState([]);
@@ -83,35 +81,37 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
       )}
       {isAuthenticated ? (
         <div>
-          <a href="http://localhost:3000/account/setting">Cài đặt tài khoản</a>
+          <a href={`${process.env.REACT_APP_FE_HOST}/account/setting`}>
+            Cài đặt tài khoản
+          </a>
           <br />
-          <a href="/">Lịch sử đặt hàng</a>
+          <a href="http://localhost:3000/order">Lịch sử đặt hàng</a>
           <br />
-          <a href="http://localhost:3000/logout">Đăng xuất</a>
+          <a href={`${process.env.REACT_APP_FE_HOST}/logout`}>Đăng xuất</a>
         </div>
       ) : (
-        <a href="http://localhost:3000/login">Đăng nhập</a>
+        <a href={`${process.env.REACT_APP_FE_HOST}/login`}>Đăng nhập</a>
       )}
     </div>
   );
 
   const onSearch = (value) => {
     if (value) {
-      window.location.href = `http://localhost:3000/find-product/${value}`;
+      window.location.href = `${process.env.REACT_APP_FE_HOST}/find-product/${value}`;
     }
   };
 
   const onClickMenu = (value) => {
     if (value.keyPath.includes("Products"))
-      window.location.href = "http://localhost:3000";
+      window.location.href = `${process.env.REACT_APP_FE_HOST}`;
     if (value.keyPath.includes("category")) {
-      window.location.href = `http://localhost:3000/${value.keyPath[1]}/${value.keyPath[0]}`;
+      window.location.href = `${process.env.REACT_APP_FE_HOST}/${value.keyPath[1]}/${value.keyPath[0]}`;
     }
     if (value.keyPath.includes("Cart")) {
-      window.location.href = `http://localhost:3000/cart`;
+      window.location.href = `${process.env.REACT_APP_FE_HOST}/cart`;
     }
     if (value.keyPath.includes("sort")) {
-      window.location.href = `http://localhost:3000/${value.keyPath[1]}/${value.keyPath[0]}/-1`;
+      window.location.href = `${process.env.REACT_APP_FE_HOST}/${value.keyPath[1]}/${value.keyPath[0]}/-1`;
     }
     console.log(value.keyPath);
   };
@@ -152,9 +152,9 @@ function LayoutAntd({ children, menuSelection = "Products" }) {
               theme="dark"
               onClick={onClickMenu}
             >
-              <Menu.Item key="Home">
+              {/* <Menu.Item key="Home">
                 <Link to="/about">Trang chủ</Link>
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item key="Products">Sản phẩm</Menu.Item>
               <Menu.Item key="Cart">Giỏ hàng</Menu.Item>
               <SubMenu

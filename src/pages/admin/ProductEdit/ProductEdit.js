@@ -39,14 +39,18 @@ function ProductEdit() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get(`http://localhost:8080/products/${_id}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/products/${_id}`
+      );
       setGetProduct(response.data);
 
       const category = await axios.get(
-        `http://localhost:8080/category/${response.data.categoryId}`
+        `${process.env.REACT_APP_BE_HOST}/category/${response.data.categoryId}`
       );
 
-      const allCategory = await axios.get("http://localhost:8080/category");
+      const allCategory = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/category`
+      );
 
       setGetCategoryName(category.data.name);
       setGetProductName(response.data.name);
@@ -77,7 +81,7 @@ function ProductEdit() {
 
   const UpdateOnClickHandler = async () => {
     try {
-      await axios.patch(`http://localhost:8080/products/${_id}`, {
+      await axios.patch(`${process.env.REACT_APP_BE_HOST}/products/${_id}`, {
         categoryId: getCategoryId,
         image: getImage,
         name: getProductName,
@@ -89,7 +93,7 @@ function ProductEdit() {
       });
       dispatch({ type: "CLEAR_IMAGE_LINK" });
 
-      window.location.href = "http://localhost:3000/admin/products";
+      window.location.href = `${process.env.REACT_APP_FE_HOST}/admin/products`;
     } catch (err) {
       console.log(err);
     }

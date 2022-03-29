@@ -1,13 +1,6 @@
 import React, { Fragment, useContext } from "react";
 import "./../../App.css";
-import {
-  Breadcrumb,
-  Col,
-  Divider,
-  Pagination,
-  Row,
-  Typography,
-} from "antd";
+import { Breadcrumb, Col, Divider, Pagination, Row, Typography } from "antd";
 import LayoutAntd from "./../../components/Layout";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -25,12 +18,11 @@ function AllProducts() {
   const [numberOfProducts, setNumberOfProducts] = useState(0);
   const [indexPage, setIndexPage] = useState(1);
 
-  const { state, dispatch } = useContext(Store);
-  const { cartItems, userInfo } = state;
-
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get("http://localhost:8080/products");
+      const response = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/products`
+      );
 
       setGetProducts(response.data);
       setNumberOfProducts(response.data.length);

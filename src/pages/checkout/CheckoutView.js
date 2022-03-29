@@ -32,7 +32,7 @@ function CheckoutView() {
       });
 
       if (products.length > 0) {
-        await axios.post("http://localhost:8080/orders", {
+        await axios.post(`${process.env.REACT_APP_BE_HOST}/orders`, {
           userId: userInfo._id,
           shippingAdress: {
             fullName: value.fullName,

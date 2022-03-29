@@ -20,7 +20,9 @@ function OrderDetail() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get(`http://localhost:8080/orders/${_id}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BE_HOST}/orders/${_id}`
+      );
       setGetData(response.data);
       setIsPaid(response.isPaid);
       setLoading(false);
@@ -46,8 +48,6 @@ function OrderDetail() {
       </AdminLayout>
     );
   }
-
-  console.log(getData);
 
   const productColumns = [
     { title: "Mã sản phẩm", dataIndex: "productId" },
@@ -89,7 +89,7 @@ function OrderDetail() {
           <Text strong>Số điện thoại: {getData.shippingAdress.phoneNum}</Text>
           <br />
           <Text strong>
-            Địa chỉ:{" "}
+            Địa chỉ:
             {`${getData.shippingAdress.address} ${getData.shippingAdress.street} ${getData.shippingAdress.city}`}
           </Text>
           <br />
